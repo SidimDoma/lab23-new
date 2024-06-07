@@ -68,19 +68,17 @@ int main() {
     printf("\nResizing the cloned matrix to 2x2:\n");
     struct matrix *m_res = matrix_resize(m_clone2, 2, 2);
     print_matrix(m_res);
-    matrix_free(m_clone2);
 
     printf("\nCreating a zero matrix (4x3):\n");
     struct matrix *zero_matrix = zero_matrix_alloc(4, 3);
     print_matrix(zero_matrix);
-    matrix_free(zero_matrix);
 
     printf("\nCreating a unit matrix (4x4):\n");
     struct matrix *unit_matrix = matrix_alloc_square_unit(4);
     print_matrix(unit_matrix);
     matrix_free(unit_matrix);
 
-    printf("\nМатрица м1 со значениями м2:\n");
+    printf("\nMatrix м1 with elements of m2:\n");
     struct matrix *assign_matrix = matrix_assign(m_clone3, m2);
     print_matrix(assign_matrix);
     matrix_free(assign_matrix);
@@ -91,6 +89,8 @@ int main() {
     struct matrix *sum_matrix = matrix_sum(m_clone4, m_clone1_2, res);
     print_matrix(sum_matrix);
     matrix_free(sum_matrix);
+    matrix_free(m_clone4);
+    matrix_free(m_clone1_2);
 
     printf("\nМ1 multiplyed with scalar 5 :\n");
     struct matrix *mult_scal_matrix = multiply_matrix_by_scalar(m_clone5, 5);
@@ -171,17 +171,25 @@ int main() {
                 }
             }
     // Create a matrix for the solution 'x'
-    struct matrix* x = matrix_alloc(3, 1);
     printf("\nMatrix A:\n");
     print_matrix(mA);
     printf("\nMatrix B:\n");
     print_matrix(mB);
     printf("\nSolving the system of equations:\n");
-    x = solve_system(mA, mB, x);
-    print_matrix(x);
+    struct matrix* x = solve_system(mA, mB);
+    if (x) {
+        for (size_t i = 0; i < x->rows; ++i) {
+            printf("%f\n", *get_element(x, i, 0));
+        }
+        matrix_free(x);
+    } else {
+        printf("Solution not found or matrix is singular.\n");
+    }
+    //print_matrix(x);
     matrix_free(mA);
     matrix_free(mB);
-    matrix_free(x);
+
+    printf("\n");
 
     struct matrix *m1 = matrix_alloc(3, 3);
     add_element(m1, 0, 0, 1);
@@ -203,6 +211,8 @@ int main() {
     print_matrix(exp);
 
     matrix_free(exp);
+
+
 
     return 0;
 }

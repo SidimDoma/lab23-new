@@ -6,23 +6,24 @@ struct matrix {
     double *data;
     size_t rows;
     size_t cols;
-};*/
+}; */
 
 struct matrix *matrix_alloc(size_t h, size_t w) {
     struct matrix *m = malloc(sizeof(struct matrix));
-    double *new_data;
-    new_data = malloc(h * w * sizeof(double));
-    if (new_data && m) {
-        m->rows = h;
-        m->cols = w;
-        m->data = new_data;
-        return m;
+    if (!m) {
+        return NULL;
     }
-    free(new_data);
-    free(m);
-    return NULL;
-}
 
+    m->data = malloc(h * w * sizeof(double));
+    if (!m->data) {
+        free(m);
+        return NULL;
+    }
+
+    m->rows = h;
+    m->cols = w;
+    return m;
+}
 
 void matrix_free(struct matrix *m) {
     free(m->data);                      // Freeing the memory allocated for the matrix data.
